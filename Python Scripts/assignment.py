@@ -144,8 +144,49 @@ for n in xrange(10):
   pylab.title("Scatter plot: %s and score" % attributes[n]['name'])
   pylab.xlabel("score (points)")
   pylab.ylabel("%s (%s)" % (attributes[n]['name'], attributes[n]['unit']))
-  pylab.show()
+  #pylab.show()
 
   print "correlation between %s and score: %1.3f" % (
       attributes[n]['name'], scipy.stats.pearsonr(x,y)[0][0])
-  
+      
+pylab.close()
+# 
+# 2.2.1
+#
+
+data = scipy.io.loadmat('../Data/zipdata.mat')
+traindata = data['traindata']
+
+
+y = []
+X = []
+for row in traindata:
+    if row[0] in (0,1):
+        y.append(row[0])
+        X.append(row[1:])
+
+y = pylab.np.asarray(y)
+X = pylab.np.asmatrix(X)
+
+for i in xrange(10):
+  # Visualize the i'th digit as an image
+  pylab.subplot(2,1,1);
+  I = pylab.np.reshape(X[i,:],(16,16))
+  pylab.imshow(I, extent=(0,16,0,16), cmap=pylab.cm.gray_r);
+  pylab.title('Digit %s as an image' % y[i])
+  #pylab.show()
+pylab.close()
+
+mus = []
+for i in xrange(256):
+    col = X[:,i]
+    mus.append(pylab.np.mean(col))
+    
+
+Y = X - pylab.np.ones((2199,1)) * mus
+
+print Y
+
+U, S, Vt = pylab.np.linalg.svd(Y)
+
+print "klaar"
